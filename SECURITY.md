@@ -23,7 +23,7 @@ You can expect an acknowledgement within a few days. Please give a reasonable am
 
 In scope:
 
-- data exfiltration from the local collector (CORS bypass, DNS rebinding, path traversal, XSS);
+- data exfiltration from the local collector (bearer-token bypass, CORS bypass, DNS rebinding, path traversal, XSS);
 - reading or writing files outside the intended database and UI directories;
 - privilege escalation through Electron, IPC or the preload bridge;
 - command injection through `OPENCODE_CLI`, `OPENCODE_DB` or model data;

@@ -11,15 +11,18 @@ const {
   shell,
   screen,
   dialog,
+  Notification,
 } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const { spawn } = require('child_process');
 
 const DEFAULT_CONSOLE_URL = 'https://opencode.ai/console';
 const APP_ID = 'ai.opencode.monitor';
 const COLLECTOR_TIMEOUT_MS = 12000;
 const MINI_HEIGHT = 168;
+const collectorToken = crypto.randomBytes(32).toString('hex');
 
 let win = null;
 let tray = null;
@@ -38,6 +41,7 @@ const defaults = {
   opacity: 0.97,
   pinned: true,
   mini: false,
+  notifications: true,
 };
 
 function labels() {
@@ -47,6 +51,7 @@ function labels() {
         show: 'Показать / скрыть',
         pinned: 'Всегда сверху',
         mini: 'Мини-режим',
+        notifications: 'Уведомления о лимитах',
         login: 'Запускать при входе',
         console: 'Открыть Console',
         about: 'О программе',
@@ -57,6 +62,7 @@ function labels() {
         show: 'Show / hide',
         pinned: 'Always on top',
         mini: 'Mini mode',
+        notifications: 'Limit notifications',
         login: 'Start at login',
         console: 'Open Console',
         about: 'About',
@@ -98,6 +104,7 @@ function startCollector() {
         ...process.env,
         ELECTRON_RUN_AS_NODE: '1',
         MONITOR_PORT: process.env.MONITOR_PORT || '0',
+        MONITOR_TOKEN: collectorToken,
       },
     });
 
@@ -283,6 +290,12 @@ function buildTrayMenu() {
     { label: trayLabels.show, click: toggleWindow },
     { label: trayLabels.pinned, type: 'checkbox', checked: !!settings.pinned, click: (item) => setPinned(item.checked) },
     { label: trayLabels.mini, type: 'checkbox', checked: !!settings.mini, click: (item) => setMini(item.checked) },
+    {
+      label: trayLabels.notifications,
+      type: 'checkbox',
+      checked: settings.notifications !== false,
+      click: (item) => setNotifications(item.checked),
+    },
   ];
 
   if (app.isPackaged && process.platform !== 'linux') {
@@ -317,6 +330,13 @@ function setPinned(pinned) {
   if (win) win.setAlwaysOnTop(!!pinned, 'floating');
   buildTrayMenu();
   return !!pinned;
+}
+
+function setNotifications(enabled) {
+  writeSettings({ notifications: !!enabled });
+  if (win) win.webContents.send('win:notifications', !!enabled);
+  buildTrayMenu();
+  return !!enabled;
 }
 
 function setMini(mini) {
@@ -383,6 +403,15 @@ if (!gotLock) {
     ipcMain.handle('app:console', (_event, value) => openConsole(value));
     ipcMain.handle('app:settings', () => readSettings());
     ipcMain.handle('app:version', () => app.getVersion());
+    ipcMain.handle('app:token', () => collectorToken);
+    ipcMain.handle('app:notify', (_event, payload) => {
+      if (!Notification.isSupported()) return false;
+      const title = String((payload && payload.title) || '').slice(0, 120);
+      const body = String((payload && payload.body) || '').slice(0, 300);
+      if (!title) return false;
+      new Notification({ title, body }).show();
+      return true;
+    });
   }).catch((error) => {
     dialog.showErrorBox(labels().errorTitle, String((error && error.message) || error));
     app.quit();

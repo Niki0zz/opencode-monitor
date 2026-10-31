@@ -26,7 +26,7 @@ function request(pathname, options = {}) {
         port,
         path: pathname,
         method: options.method || 'GET',
-        headers: options.headers || {},
+        headers: { Authorization: 'Bearer test-token', ...(options.headers || {}) },
       },
       (res) => {
         let body = '';
@@ -66,7 +66,7 @@ before(async () => {
   db.close();
 
   child = spawn(process.execPath, [collectorPath], {
-    env: { ...process.env, OPENCODE_DB: dbPath, MONITOR_PORT: '0' },
+    env: { ...process.env, OPENCODE_DB: dbPath, MONITOR_PORT: '0', MONITOR_TOKEN: 'test-token' },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
@@ -134,6 +134,13 @@ test('the UI is same-origin, has a CSP, and sends no CORS header', async () => {
 test('non-loopback Host headers are rejected', async () => {
   const response = await request('/api/health', { headers: { Host: 'evil.example' } });
   assert.equal(response.status, 403);
+});
+
+test('API requests require the per-launch bearer token', async () => {
+  const missing = await request('/api/health', { headers: { Authorization: '' } });
+  assert.equal(missing.status, 401);
+  const wrong = await request('/api/health', { headers: { Authorization: 'Bearer wrong' } });
+  assert.equal(wrong.status, 401);
 });
 
 test('path traversal and non-GET methods are rejected', async () => {

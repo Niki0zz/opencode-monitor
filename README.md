@@ -21,6 +21,7 @@ An unofficial desktop overlay for [OpenCode](https://opencode.ai) that shows Go 
 - **Models** — usage per model with its share of the monthly model cap.
 - **Activity** — recent sessions with model, time and tokens.
 - **Mini mode** — a compact card with all three Go limits, ready to sit in a corner.
+- **Limit notifications** — a system notification at 80% and 95%, once per limit window (toggle in the tray).
 - **Tray + hotkey** — hide to tray, `Alt+Shift+O` to show/hide, start at login (installed builds).
 - **English and Russian UI** — chosen automatically from the system language.
 
@@ -36,10 +37,10 @@ This app was built to keep your data on your machine:
 
 - The OpenCode SQLite database is opened **read-only**; the app never writes to it.
 - **No telemetry, analytics, accounts or cloud sync.** The app makes no outbound network requests.
-- The UI is served by a **loopback-only** HTTP server on a random port. The server validates the `Host` header (DNS-rebinding protection), sends no CORS headers, answers `GET`/`HEAD` only, and serves the UI and API from the same origin.
+- The UI is served by a **loopback-only** HTTP server on a random port. Every API call needs a per-launch bearer token, the server validates the `Host` header (DNS-rebinding protection), sends no CORS headers, answers `GET`/`HEAD` only, and serves the UI and API from the same origin.
 - The source contains **no workspace, organization or user identifiers**. The Console link is derived at runtime from the local CLI response; no `org_…` ID is stored in the repository.
 - The local API does not return database paths, project directories or session IDs.
-- Settings contain only window geometry, opacity, pin and mini state (`settings.json` in the Electron user-data folder).
+- Settings contain only window geometry, opacity, pin/mini state and the notification toggle (`settings.json` in the Electron user-data folder).
 
 Read the full threat model in [PRIVACY.md](PRIVACY.md). To report a vulnerability, use [SECURITY.md](SECURITY.md).
 
@@ -76,6 +77,7 @@ npm start
 | `✕` | Hide to tray |
 | `Alt+Shift+O` | Show/hide from anywhere |
 | Tray double-click | Show the window |
+| Tray → Limit notifications | Toggle 80% / 95% system alerts |
 | `Console ↗` | Open the matching OpenCode Console page in your browser |
 
 The window position and size are restored on the next launch. The title bar can be dragged; the window can be resized from its edges.
@@ -132,7 +134,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the code style and the privacy rules 
 ## Roadmap
 
 - Signed releases and automatic updates.
-- Desktop notifications when a limit crosses 80% / 95%.
 - Per-project and per-agent breakdown with CSV export.
 - Optional refresh of the price table from the models catalog.
 - More UI languages.

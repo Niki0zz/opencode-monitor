@@ -25,7 +25,8 @@ Only a small settings file in Electron's user-data directory (`settings.json`):
   "y": 24,
   "opacity": 0.97,
   "pinned": true,
-  "mini": false
+  "mini": false,
+  "notifications": true
 }
 ```
 
@@ -41,6 +42,7 @@ No usage history, session titles, tokens or costs are copied to disk. Aggregates
 
 The loopback server is deliberately small:
 
+- A per-launch bearer token is required for every `/api/*` request. It is generated in the Electron main process, kept in memory and passed to the renderer through context-isolated IPC; it is never written to disk or put in a URL.
 - `Host` header allowlist (`127.0.0.1:<port>`, `localhost:<port>`, `[::1]:<port>`) to block DNS-rebinding attacks.
 - No `Access-Control-Allow-Origin` header, so web pages from other origins cannot read responses.
 - `GET`/`HEAD` only; there are no state-changing endpoints.
@@ -50,7 +52,7 @@ The loopback server is deliberately small:
 
 ### Threat model
 
-The server is reachable by any process running as the same operating-system user. This is inherent to a local UI and is why the API is read-only and minimal. If you need isolation from other local processes, run the app in a separate OS account. A per-launch access token is a possible future hardening step.
+The server is reachable by any process running as the same operating-system user, but API calls need the per-launch token. A process that can read another process's memory or attach a debugger is outside this protection; run the app in a separate OS account if you need that isolation. The API remains read-only and minimal.
 
 ## Repository hygiene
 

@@ -10,8 +10,13 @@ contextBridge.exposeInMainWorld('monitor', {
   onMini: (callback) => {
     ipcRenderer.on('win:mini', (_event, value) => callback(!!value));
   },
+  onNotifications: (callback) => {
+    ipcRenderer.on('win:notifications', (_event, value) => callback(!!value));
+  },
   opacity: (value) => ipcRenderer.invoke('win:opacity', value),
   openConsole: (url) => ipcRenderer.invoke('app:console', url),
   settings: () => ipcRenderer.invoke('app:settings'),
   version: () => ipcRenderer.invoke('app:version'),
+  token: () => ipcRenderer.invoke('app:token'),
+  notify: (title, body) => ipcRenderer.invoke('app:notify', { title, body }),
 });

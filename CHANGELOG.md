@@ -10,6 +10,7 @@ First public release.
 
 - Always-on-top Electron overlay with Go limits (rolling, weekly, monthly), spend, tokens, hourly/daily chart, per-model usage and recent activity.
 - Mini mode with the full Go limits card, system tray, `Alt+Shift+O` global shortcut and start-at-login for installed builds.
+- System notifications at 80% and 95% of a Go limit, once per reset window, with a tray toggle.
 - English and Russian UI selected from the system language.
 - Demo mode (`npm run demo`) with deterministic sample data.
 - Cross-platform packaging with electron-builder, GitHub Actions CI and a tag-driven release workflow.
@@ -24,6 +25,7 @@ First public release.
 
 ### Security
 
+- Every `/api/*` request now requires a random per-launch bearer token; the collector refuses to start without one.
 - Removed the hard-coded organization identifier; the Console link is derived at runtime from the local CLI response.
 - Removed `Access-Control-Allow-Origin: *`; the API is same-origin only.
 - Added a `Host` header allowlist, CSP, `nosniff`, `no-referrer` and path-traversal protection.

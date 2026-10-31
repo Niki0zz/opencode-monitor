@@ -4,6 +4,7 @@ const http = require('http');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const crypto = require('crypto');
 const { execFile } = require('child_process');
 const usage = require('./lib/usage');
 const pkg = require('./package.json');
@@ -19,7 +20,13 @@ const HOST = '127.0.0.1';
 const PORT = Number.parseInt(process.env.MONITOR_PORT || '0', 10) || 0;
 const UI_DIR = path.join(__dirname, 'ui');
 const DB_PATH = process.env.OPENCODE_DB || defaultDbPath();
+const TOKEN = process.env.MONITOR_TOKEN || '';
 const SUMMARY_TTL_MS = 7000;
+
+if (!TOKEN) {
+  console.error('[collector] MONITOR_TOKEN is required (the app generates one at launch)');
+  process.exit(1);
+}
 
 function defaultDbPath() {
   const base = process.env.XDG_DATA_HOME || path.join(os.homedir(), '.local', 'share');
@@ -478,6 +485,12 @@ function validHostHeader(req) {
   return allowed.has(String(req.headers.host || ''));
 }
 
+function authorized(req) {
+  const actual = Buffer.from(String(req.headers.authorization || ''));
+  const expected = Buffer.from('Bearer ' + TOKEN);
+  return actual.length === expected.length && crypto.timingSafeEqual(actual, expected);
+}
+
 const server = http.createServer(async (req, res) => {
   if (!validHostHeader(req)) return json(res, 403, { error: 'bad host' });
   if (req.method !== 'GET' && req.method !== 'HEAD') {
@@ -486,6 +499,9 @@ const server = http.createServer(async (req, res) => {
   }
 
   const url = new URL(req.url, 'http://127.0.0.1');
+  if (url.pathname.startsWith('/api/') && !authorized(req)) {
+    return json(res, 401, { error: 'unauthorized' });
+  }
   try {
     if (url.pathname === '/api/ping') {
       return json(res, 200, { ok: true, version: pkg.version, pid: process.pid });

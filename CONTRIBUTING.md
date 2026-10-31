@@ -63,4 +63,4 @@ This is a privacy-first project:
 - For UI changes, attach a demo-mode screenshot.
 - Mention platform testing (Windows, macOS, Linux).
 
-For security issues, follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
+For security issues, follow [SECURITY.md](SECURITY.md) instead of opening a public issue. Maintainers preparing a release should follow [PUBLISHING.md](PUBLISHING.md).

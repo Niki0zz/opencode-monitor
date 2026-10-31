@@ -16,6 +16,8 @@ const state = {
   consoleUrl: 'https://opencode.ai/console',
   online: true,
   dbOk: true,
+  token: null,
+  notifications: true,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -75,7 +77,9 @@ function escapeHtml(value) {
 
 async function get(path) {
   if (DEMO) return demoGet(path);
-  const response = await fetch(API + path, { cache: 'no-store' });
+  const headers = {};
+  if (state.token) headers.Authorization = 'Bearer ' + state.token;
+  const response = await fetch(API + path, { cache: 'no-store', headers });
   let data = {};
   try {
     data = await response.json();
@@ -154,6 +158,35 @@ function renderLimits(payload) {
   renderLimitRow('limRolling', go.rolling);
   renderLimitRow('limWeekly', go.weekly);
   renderLimitRow('limMonthly', go.monthly);
+  notifyLimits(go);
+}
+
+function notifyLimits(go) {
+  if (DEMO || !state.notifications || !window.monitor || !window.monitor.notify) return;
+  const limits = [
+    ['rolling', go.rolling],
+    ['weekly', go.weekly],
+    ['monthly', go.monthly],
+  ];
+  for (const [name, limit] of limits) {
+    if (!limit || !limit.resetsAt) continue;
+    const percent = Number(limit.percent) || 0;
+    const level = percent >= 95 ? 'critical' : percent >= 80 ? 'warning' : null;
+    if (!level) continue;
+    const key = 'ocm:notify:' + name + ':' + limit.resetsAt + ':' + level;
+    try {
+      if (localStorage.getItem(key)) continue;
+      localStorage.setItem(key, '1');
+    } catch {
+      // notifications still work without storage; they may repeat after a restart
+    }
+    window.monitor
+      .notify(
+        t('notify.title', { level: t(level === 'critical' ? 'notify.critical' : 'notify.warning') }),
+        t('notify.body', { name: t('limits.' + name), percent: Math.round(percent) })
+      )
+      .catch(() => {});
+  }
 }
 
 function renderSummary(summary) {
@@ -298,12 +331,18 @@ async function applySettings() {
   try {
     const settings = await window.monitor.settings();
     state.pinned = !!settings.pinned;
+    state.notifications = settings.notifications !== false;
     $('btnPin').classList.toggle('on', state.pinned);
     applyMiniState(settings.mini);
   } catch {
     // defaults are fine
   }
   if (window.monitor.onMini) window.monitor.onMini(applyMiniState);
+  if (window.monitor.onNotifications) {
+    window.monitor.onNotifications((value) => {
+      state.notifications = !!value;
+    });
+  }
 }
 
 function openConsole() {
@@ -454,6 +493,13 @@ function demoGet(path) {
   if (window.I18N) window.I18N.apply();
   bind();
   await applySettings();
+  if (window.monitor && window.monitor.token) {
+    try {
+      state.token = await window.monitor.token();
+    } catch {
+      state.token = null;
+    }
+  }
   setTab('models');
   await Promise.all([refresh(), refreshLimits()]);
   setInterval(refresh, 6000);
