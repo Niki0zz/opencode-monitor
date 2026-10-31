@@ -1,0 +1,65 @@
+name: Bug report
+description: Something is broken or looks wrong
+title: '[Bug]: '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please remove personal data (session titles, paths, tokens, organization IDs) from screenshots and logs.
+        For security issues use the private channel in SECURITY.md, not this form.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the problem and what you expected instead.
+      placeholder: The limits block stays empty after OpenCode starts, but tokens are updating.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start OpenCode Monitor with ...
+        2. Click ...
+        3. See ...
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS
+        - Linux
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: OpenCode Monitor version
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: opencode-version
+    attributes:
+      label: OpenCode version
+      description: Output of `opencode --version`, if available.
+      placeholder: v2.2.5
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Run the app from a terminal to capture stderr. Remove personal data first.
+      render: shell
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed personal data from this report (screenshots, logs, paths, identifiers).
+          required: true

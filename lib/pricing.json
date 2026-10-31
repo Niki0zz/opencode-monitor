@@ -1,0 +1,29 @@
+{
+  "updated": "2026-10-31",
+  "currency": "USD",
+  "unit": "per 1M tokens",
+  "note": "Estimates only. Prices and monthly model caps change; edit this file to update them. Models missing here fall back to the real cost recorded by OpenCode (if any).",
+  "models": {
+    "glm-5.3-flash": { "in": 0.15, "out": 0.5, "cache": 0.03, "limit": 60 },
+    "glm-5.3": { "in": 1.4, "out": 4.4, "cache": 0.26, "limit": 15 },
+    "glm-5.2": { "in": 1.4, "out": 4.4, "cache": 0.26, "limit": 60 },
+    "kimi-k3.1-pro": { "in": 2, "out": 10, "cache": 0.2, "cacheWrite": 2, "limit": 15 },
+    "kimi-k3": { "in": 3, "out": 15, "cache": 0.3, "cacheWrite": 3, "limit": 15 },
+    "kimi-k2.7-code": { "in": 0.95, "out": 4, "cache": 0.19, "limit": 60 },
+    "longcat-2.0": { "in": 0.3, "out": 1.2, "cache": 0.006, "limit": 60 },
+    "step-5-preview": { "in": 1, "out": 2.7, "cache": 0.1, "limit": 15 },
+    "mimo-v2.6-flash": { "in": 0.14, "out": 0.28, "cache": 0.0028, "limit": 60 },
+    "mimo-v2.6-pro": { "in": 0.435, "out": 0.87, "cache": 0.003625, "limit": 15 },
+    "minimax-m3.1-flash": { "in": 0.15, "out": 0.6, "cache": 0.015, "limit": 20 },
+    "minimax-m3": { "in": 0.3, "out": 1.2, "cache": 0.06, "limit": 60 },
+    "qwen3.8-max": { "in": 2, "out": 6, "cache": 0.25, "cacheWrite": 2.5, "limit": 15 },
+    "qwen3.8-flash": { "in": 0.15, "out": 0.47, "cache": 0.016, "cacheWrite": 0.2, "limit": 30 },
+    "qwen3.7-plus": { "in": 0.4, "out": 1.6, "cache": 0.04, "cacheWrite": 0.5, "limit": 60 },
+    "deepseek-v4.1-flash": { "in": 0.15, "out": 0.6, "cache": 0.003, "limit": 80 },
+    "deepseek-v4-pro": { "in": 0.66, "out": 1.98, "cache": 0.022, "limit": 15 },
+    "hy4-preview": { "in": 0.834, "out": 2.501, "cache": 0.042, "limit": 30 },
+    "hy3": { "in": 0.14, "out": 0.58, "cache": 0.035, "limit": 60 },
+    "claude-haiku-5-5": { "in": 0.1, "out": 0.5, "cache": 0.01, "cacheWrite": 0.125, "limit": 15 },
+    "gemini-4-argon": { "in": 2, "out": 10, "cache": 0.1, "limit": 30 }
+  }
+}

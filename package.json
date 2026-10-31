@@ -1,0 +1,99 @@
+{
+  "name": "opencode-monitor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Unofficial desktop overlay for OpenCode Go limits, spend and activity",
+  "main": "main.js",
+  "author": "TitoV3D (https://github.com/Niki0zz)",
+  "license": "MIT",
+  "homepage": "https://github.com/Niki0zz/opencode-monitor#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Niki0zz/opencode-monitor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Niki0zz/opencode-monitor/issues"
+  },
+  "keywords": [
+    "opencode",
+    "electron",
+    "overlay",
+    "usage",
+    "tokens",
+    "monitor",
+    "desktop"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "electron .",
+    "demo": "electron . --demo",
+    "check": "node scripts/check.js",
+    "test": "node --test",
+    "dist": "electron-builder",
+    "dist:dir": "electron-builder --dir"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.18.0"
+  },
+  "build": {
+    "appId": "io.github.niki0zz.opencode-monitor",
+    "productName": "OpenCode Monitor",
+    "asar": true,
+    "asarUnpack": [
+      "collector.js",
+      "lib/**/*",
+      "ui/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "files": [
+      "main.js",
+      "preload.js",
+      "collector.js",
+      "lib/**/*",
+      "ui/**/*",
+      "assets/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "artifactName": "OpenCode-Monitor-${version}-${os}-${arch}.${ext}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "OpenCode Monitor"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.developer-tools",
+      "icon": "build/icon.png"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility",
+      "icon": "build/icon.png"
+    }
+  }
+}

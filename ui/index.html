@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="color-scheme" content="dark" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OpenCode Monitor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="head">
+      <div class="brand">
+        <span class="dot" id="liveDot"></span>
+        <span class="name">OpenCode</span>
+        <span class="sub" data-i18n="app.sub">usage</span>
+      </div>
+      <div class="actions">
+        <button id="btnPin" class="icon" data-i18n-title="title.pin" title="Always on top">▲</button>
+        <button id="btnMini" class="icon" data-i18n-title="title.mini" title="Mini mode">—</button>
+        <button id="btnClose" class="icon" data-i18n-title="title.close" title="Hide to tray">✕</button>
+      </div>
+    </header>
+
+    <div class="banner hidden" id="banner" role="status"></div>
+
+    <main class="body" id="body">
+      <section class="limits">
+        <div class="limits-head">
+          <span data-i18n="limits.title">Go limits</span>
+          <span class="muted" id="limitsWorkspace"></span>
+        </div>
+        <div class="lim" id="limRolling">
+          <div class="lim-top"><b data-i18n="limits.rolling">Rolling</b><span class="lim-val">—</span></div>
+          <div class="lim-bar"><i></i></div>
+          <div class="lim-reset">—</div>
+        </div>
+        <div class="lim" id="limWeekly">
+          <div class="lim-top"><b data-i18n="limits.weekly">Weekly</b><span class="lim-val">—</span></div>
+          <div class="lim-bar"><i></i></div>
+          <div class="lim-reset">—</div>
+        </div>
+        <div class="lim" id="limMonthly">
+          <div class="lim-top"><b data-i18n="limits.monthly">Monthly</b><span class="lim-val">—</span></div>
+          <div class="lim-bar"><i></i></div>
+          <div class="lim-reset">—</div>
+        </div>
+      </section>
+
+      <div class="ranges" id="ranges">
+        <button data-range="today" class="active" data-i18n="ranges.today">Today</button>
+        <button data-range="7d" data-i18n="ranges.7d">7 days</button>
+        <button data-range="30d" data-i18n="ranges.30d">30 days</button>
+      </div>
+
+      <section class="hero">
+        <div>
+          <div class="value" id="cost">$0.000</div>
+          <div class="label" id="costLabel" data-i18n="hero.spend">spend</div>
+        </div>
+        <div class="right">
+          <div class="value small" id="tokens">0</div>
+          <div class="label" data-i18n="hero.tokens">tokens</div>
+        </div>
+      </section>
+
+      <section class="stats">
+        <div class="stat"><b id="stInput">0</b><span data-i18n="stats.input">input</span></div>
+        <div class="stat"><b id="stOutput">0</b><span data-i18n="stats.output">output</span></div>
+        <div class="stat"><b id="stCache">0</b><span data-i18n="stats.cache">cache</span></div>
+        <div class="stat"><b id="stSessions">0</b><span data-i18n="stats.sessions">sessions</span></div>
+      </section>
+
+      <section class="chart">
+        <div class="bars" id="bars"></div>
+        <div class="chart-caption"><span id="chartLeft">00</span><span id="chartRight">23</span></div>
+      </section>
+
+      <nav class="tabs" id="tabs">
+        <button data-tab="models" class="active" data-i18n="tabs.models">Models</button>
+        <button data-tab="activity" data-i18n="tabs.activity">Activity</button>
+      </nav>
+
+      <section id="tabModels" class="list"></section>
+      <section id="tabActivity" class="list hidden"></section>
+    </main>
+
+    <div id="mini">
+      <span class="dot" id="liveDotMini"></span>
+      <span class="mini-cost" id="miniCost">—</span>
+      <span class="mini-tokens" id="miniTokens"></span>
+      <span class="mini-model" id="miniModel">—</span>
+    </div>
+
+    <footer class="foot">
+      <button id="btnConsole" class="link" data-i18n="footer.console" data-i18n-title="title.console">Console ↗</button>
+      <span id="updated" aria-live="polite">—</span>
+    </footer>
+  </div>
+  <script src="i18n.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
