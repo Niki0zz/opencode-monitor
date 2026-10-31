@@ -9,7 +9,7 @@ First public release.
 ### Added
 
 - Always-on-top Electron overlay with Go limits (rolling, weekly, monthly), spend, tokens, hourly/daily chart, per-model usage and recent activity.
-- Mini mode, system tray, `Alt+Shift+O` global shortcut and start-at-login for installed builds.
+- Mini mode with the full Go limits card, system tray, `Alt+Shift+O` global shortcut and start-at-login for installed builds.
 - English and Russian UI selected from the system language.
 - Demo mode (`npm run demo`) with deterministic sample data.
 - Cross-platform packaging with electron-builder, GitHub Actions CI and a tag-driven release workflow.

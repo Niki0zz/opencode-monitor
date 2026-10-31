@@ -20,9 +20,15 @@ An unofficial desktop overlay for [OpenCode](https://opencode.ai) that shows Go 
 - **Chart** — token activity by hour for today, or by day for 7/30 days.
 - **Models** — usage per model with its share of the monthly model cap.
 - **Activity** — recent sessions with model, time and tokens.
-- **Mini mode** — a 84 px strip with the highest limit percentage, tokens and the active model.
+- **Mini mode** — a compact card with all three Go limits, ready to sit in a corner.
 - **Tray + hotkey** — hide to tray, `Alt+Shift+O` to show/hide, start at login (installed builds).
 - **English and Russian UI** — chosen automatically from the system language.
+
+### Mini mode
+
+The collapsed window keeps the Go limits card visible and stays draggable; hover it for the expand and hide buttons.
+
+![Mini mode](docs/screenshot-mini.png)
 
 ## Privacy by design
 
@@ -65,7 +71,8 @@ npm start
 | Control | Action |
 | --- | --- |
 | `▲` | Toggle always-on-top (on by default) |
-| `—` | Mini mode |
+| `—` | Mini mode (limits card only) |
+| `⤢` (hover in mini) | Return to the full window |
 | `✕` | Hide to tray |
 | `Alt+Shift+O` | Show/hide from anywhere |
 | Tray double-click | Show the window |

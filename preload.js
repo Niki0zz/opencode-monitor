@@ -7,6 +7,9 @@ contextBridge.exposeInMainWorld('monitor', {
   close: () => ipcRenderer.invoke('win:close'),
   pin: (value) => ipcRenderer.invoke('win:pin', value),
   mini: (value) => ipcRenderer.invoke('win:mini', value),
+  onMini: (callback) => {
+    ipcRenderer.on('win:mini', (_event, value) => callback(!!value));
+  },
   opacity: (value) => ipcRenderer.invoke('win:opacity', value),
   openConsole: (url) => ipcRenderer.invoke('app:console', url),
   settings: () => ipcRenderer.invoke('app:settings'),

@@ -24,6 +24,7 @@ html, body {
 }
 
 .app {
+  position: relative;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -169,13 +170,42 @@ html, body {
 }
 .link { border: 0; background: transparent; color: var(--accent); cursor: pointer; font-size: 10.5px; padding: 0; }
 
-#mini { display: none; align-items: center; gap: 8px; padding: 8px 12px 10px; }
-body.mini .body, body.mini .foot { display: none; }
-body.mini #mini { display: flex; }
-body.mini .head { border-bottom: 0; padding-bottom: 2px; }
-.mini-cost { font-weight: 650; font-size: 15px; font-variant-numeric: tabular-nums; }
-.mini-tokens { color: var(--muted); font-size: 11px; }
-.mini-model { margin-left: auto; color: var(--muted); font-size: 10.5px; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* --- Mini mode: only the Go limits card --- */
+.mini-controls {
+  display: none;
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  z-index: 5;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  -webkit-app-region: no-drag;
+}
+body.mini .app:hover .mini-controls { opacity: 1; }
+body.mini .mini-controls { display: flex; }
+.mini-controls .icon {
+  width: 20px;
+  height: 20px;
+  border-color: var(--line);
+  background: rgba(16, 18, 21, 0.88);
+}
+body.mini .head,
+body.mini .banner,
+body.mini .foot { display: none; }
+body.mini .body { padding: 0; display: block; }
+body.mini .body > :not(.limits) { display: none; }
+body.mini .limits {
+  height: 100%;
+  padding: 11px 13px 10px;
+  gap: 7px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  justify-content: space-between;
+  -webkit-app-region: drag;
+}
+body.mini .app { -webkit-app-region: drag; }
 
 .hidden { display: none !important; }
 .empty { color: var(--muted); font-size: 11px; padding: 10px 2px; }

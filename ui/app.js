@@ -145,19 +145,15 @@ function renderLimits(payload) {
   const go = data.go;
   if (!go) {
     ['limRolling', 'limWeekly', 'limMonthly'].forEach((id) => renderLimitRow(id, null));
-    $('miniCost').textContent = '—';
     $('limitsWorkspace').textContent = '';
     return;
   }
   state.limits = go;
   if (data.workspace && data.workspace.url) state.consoleUrl = data.workspace.url;
   $('limitsWorkspace').textContent = (data.workspace && data.workspace.name) || '';
-  const rolling = renderLimitRow('limRolling', go.rolling);
-  const weekly = renderLimitRow('limWeekly', go.weekly);
-  const monthly = renderLimitRow('limMonthly', go.monthly);
-  const max = Math.max(rolling, weekly, monthly);
-  $('miniCost').textContent = max + '%';
-  $('miniCost').title = t('mini.limitTitle');
+  renderLimitRow('limRolling', go.rolling);
+  renderLimitRow('limWeekly', go.weekly);
+  renderLimitRow('limMonthly', go.monthly);
 }
 
 function renderSummary(summary) {
@@ -247,10 +243,6 @@ function renderActivity(rows) {
 
 function renderLive(live) {
   $('liveDot').classList.toggle('live', !!live.active);
-  $('liveDotMini').classList.toggle('live', !!live.active);
-  const today = live.today || {};
-  $('miniTokens').textContent = fmtNum((today.input || 0) + (today.output || 0) + (today.reasoning || 0) + (today.cacheRead || 0)) + ' tok';
-  $('miniModel').textContent = live.model || '—';
 }
 
 async function refresh() {
@@ -287,22 +279,31 @@ async function refreshLimits() {
   updateBanner();
 }
 
+function applyMiniState(value) {
+  state.mini = !!value;
+  document.body.classList.toggle('mini', state.mini);
+  $('btnMini').classList.toggle('on', state.mini);
+}
+
+async function setMiniMode(value) {
+  applyMiniState(value);
+  if (window.monitor) await window.monitor.mini(state.mini);
+}
+
 async function applySettings() {
   if (!window.monitor) {
-    document.body.classList.toggle('mini', state.mini);
-    $('btnMini').classList.toggle('on', state.mini);
+    applyMiniState(state.mini);
     return;
   }
   try {
     const settings = await window.monitor.settings();
     state.pinned = !!settings.pinned;
-    state.mini = !!settings.mini;
     $('btnPin').classList.toggle('on', state.pinned);
-    $('btnMini').classList.toggle('on', state.mini);
-    document.body.classList.toggle('mini', state.mini);
+    applyMiniState(settings.mini);
   } catch {
     // defaults are fine
   }
+  if (window.monitor.onMini) window.monitor.onMini(applyMiniState);
 }
 
 function openConsole() {
@@ -325,13 +326,12 @@ function bind() {
     $('btnPin').classList.toggle('on', state.pinned);
     if (window.monitor) await window.monitor.pin(state.pinned);
   });
-  $('btnMini').addEventListener('click', async () => {
-    state.mini = !state.mini;
-    document.body.classList.toggle('mini', state.mini);
-    $('btnMini').classList.toggle('on', state.mini);
-    if (window.monitor) await window.monitor.mini(state.mini);
-  });
+  $('btnMini').addEventListener('click', () => setMiniMode(!state.mini));
+  $('btnExpand').addEventListener('click', () => setMiniMode(false));
   $('btnClose').addEventListener('click', () => {
+    if (window.monitor) window.monitor.close();
+  });
+  $('btnMiniClose').addEventListener('click', () => {
     if (window.monitor) window.monitor.close();
   });
   $('btnConsole').addEventListener('click', openConsole);

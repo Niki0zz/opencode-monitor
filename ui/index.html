@@ -86,17 +86,15 @@
       <section id="tabActivity" class="list hidden"></section>
     </main>
 
-    <div id="mini">
-      <span class="dot" id="liveDotMini"></span>
-      <span class="mini-cost" id="miniCost">—</span>
-      <span class="mini-tokens" id="miniTokens"></span>
-      <span class="mini-model" id="miniModel">—</span>
-    </div>
-
     <footer class="foot">
       <button id="btnConsole" class="link" data-i18n="footer.console" data-i18n-title="title.console">Console ↗</button>
       <span id="updated" aria-live="polite">—</span>
     </footer>
+
+    <div class="mini-controls" id="miniControls">
+      <button id="btnExpand" class="icon" data-i18n-title="title.expand" title="Expand">⤢</button>
+      <button id="btnMiniClose" class="icon" data-i18n-title="title.close" title="Hide to tray">✕</button>
+    </div>
   </div>
   <script src="i18n.js"></script>
   <script src="app.js"></script>

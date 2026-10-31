@@ -19,6 +19,7 @@ const { spawn } = require('child_process');
 const DEFAULT_CONSOLE_URL = 'https://opencode.ai/console';
 const APP_ID = 'ai.opencode.monitor';
 const COLLECTOR_TIMEOUT_MS = 12000;
+const MINI_HEIGHT = 168;
 
 let win = null;
 let tray = null;
@@ -171,7 +172,7 @@ function createWindow() {
   const settings = readSettings();
   const primary = screen.getPrimaryDisplay().workArea;
   const width = settings.width;
-  const height = settings.mini ? 84 : settings.height;
+  const height = settings.mini ? MINI_HEIGHT : settings.height;
   const displays = screen.getAllDisplays();
 
   const onScreen = (px, py) =>
@@ -196,7 +197,7 @@ function createWindow() {
     x,
     y,
     minWidth: 320,
-    minHeight: 84,
+    minHeight: settings.mini ? MINI_HEIGHT : 84,
     frame: false,
     transparent: true,
     backgroundColor: '#00000000',
@@ -322,10 +323,12 @@ function setMini(mini) {
   const settings = writeSettings({ mini: !!mini });
   if (!win) return !!mini;
   const [width] = win.getSize();
-  const height = mini ? 84 : settings.height;
+  const height = mini ? MINI_HEIGHT : settings.height;
+  win.setMinimumSize(320, mini ? MINI_HEIGHT : 84);
   win.setBounds({ x: win.getBounds().x, y: win.getBounds().y, width, height }, false);
   win.setAlwaysOnTop(!!settings.pinned, 'floating');
   win.moveTop();
+  win.webContents.send('win:mini', !!mini);
   buildTrayMenu();
   return !!mini;
 }
