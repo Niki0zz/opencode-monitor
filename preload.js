@@ -18,5 +18,5 @@ contextBridge.exposeInMainWorld('monitor', {
   settings: () => ipcRenderer.invoke('app:settings'),
   version: () => ipcRenderer.invoke('app:version'),
   token: () => ipcRenderer.invoke('app:token'),
-  notify: (title, body) => ipcRenderer.invoke('app:notify', { title, body }),
+  notifyOnce: (key, title, body) => ipcRenderer.invoke('app:notify-once', { key, title, body }),
 });

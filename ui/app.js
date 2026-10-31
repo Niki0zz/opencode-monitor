@@ -162,7 +162,7 @@ function renderLimits(payload) {
 }
 
 function notifyLimits(go) {
-  if (DEMO || !state.notifications || !window.monitor || !window.monitor.notify) return;
+  if (DEMO || !state.notifications || !window.monitor || !window.monitor.notifyOnce) return;
   const limits = [
     ['rolling', go.rolling],
     ['weekly', go.weekly],
@@ -173,15 +173,10 @@ function notifyLimits(go) {
     const percent = Number(limit.percent) || 0;
     const level = percent >= 95 ? 'critical' : percent >= 80 ? 'warning' : null;
     if (!level) continue;
-    const key = 'ocm:notify:' + name + ':' + limit.resetsAt + ':' + level;
-    try {
-      if (localStorage.getItem(key)) continue;
-      localStorage.setItem(key, '1');
-    } catch {
-      // notifications still work without storage; they may repeat after a restart
-    }
+    const key = name + ':' + limit.resetsAt + ':' + level;
     window.monitor
-      .notify(
+      .notifyOnce(
+        key,
         t('notify.title', { level: t(level === 'critical' ? 'notify.critical' : 'notify.warning') }),
         t('notify.body', { name: t('limits.' + name), percent: Math.round(percent) })
       )

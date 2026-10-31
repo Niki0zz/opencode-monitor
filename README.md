@@ -40,7 +40,7 @@ This app was built to keep your data on your machine:
 - The UI is served by a **loopback-only** HTTP server on a random port. Every API call needs a per-launch bearer token, the server validates the `Host` header (DNS-rebinding protection), sends no CORS headers, answers `GET`/`HEAD` only, and serves the UI and API from the same origin.
 - The source contains **no workspace, organization or user identifiers**. The Console link is derived at runtime from the local CLI response; no `org_…` ID is stored in the repository.
 - The local API does not return database paths, project directories or session IDs.
-- Settings contain only window geometry, opacity, pin/mini state and the notification toggle (`settings.json` in the Electron user-data folder).
+- Settings contain only window geometry, opacity, pin/mini state, the notification toggle and timestamps of already-shown alerts (`settings.json` in the Electron user-data folder).
 
 Read the full threat model in [PRIVACY.md](PRIVACY.md). To report a vulnerability, use [SECURITY.md](SECURITY.md).
 

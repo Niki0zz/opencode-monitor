@@ -339,6 +339,25 @@ function setNotifications(enabled) {
   return !!enabled;
 }
 
+function notifyOnce(key, title, body) {
+  const safeKey = String(key || '').slice(0, 200);
+  if (!safeKey) return false;
+  const settings = readSettings();
+  const sent = settings.notificationsSent && typeof settings.notificationsSent === 'object'
+    ? settings.notificationsSent
+    : {};
+  if (sent[safeKey]) return false;
+  const cutoff = Date.now() - 60 * 86400000;
+  for (const item of Object.keys(sent)) {
+    if (!(sent[item] > cutoff)) delete sent[item];
+  }
+  sent[safeKey] = Date.now();
+  writeSettings({ notificationsSent: sent });
+  if (!Notification.isSupported()) return false;
+  new Notification({ title, body }).show();
+  return true;
+}
+
 function setMini(mini) {
   const settings = writeSettings({ mini: !!mini });
   if (!win) return !!mini;
@@ -404,13 +423,11 @@ if (!gotLock) {
     ipcMain.handle('app:settings', () => readSettings());
     ipcMain.handle('app:version', () => app.getVersion());
     ipcMain.handle('app:token', () => collectorToken);
-    ipcMain.handle('app:notify', (_event, payload) => {
-      if (!Notification.isSupported()) return false;
+    ipcMain.handle('app:notify-once', (_event, payload) => {
       const title = String((payload && payload.title) || '').slice(0, 120);
       const body = String((payload && payload.body) || '').slice(0, 300);
       if (!title) return false;
-      new Notification({ title, body }).show();
-      return true;
+      return notifyOnce(payload && payload.key, title, body);
     });
   }).catch((error) => {
     dialog.showErrorBox(labels().errorTitle, String((error && error.message) || error));

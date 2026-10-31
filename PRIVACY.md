@@ -26,11 +26,12 @@ Only a small settings file in Electron's user-data directory (`settings.json`):
   "opacity": 0.97,
   "pinned": true,
   "mini": false,
-  "notifications": true
+  "notifications": true,
+  "notificationsSent": {}
 }
 ```
 
-No usage history, session titles, tokens or costs are copied to disk. Aggregates and limits are kept in memory and disappear when the app exits.
+`notificationsSent` holds timestamps of already-shown limit alerts so they do not repeat on every launch; entries older than 60 days are pruned. No usage history, session titles, tokens or costs are copied to disk. Aggregates and limits are kept in memory and disappear when the app exits.
 
 ## Network activity
 
